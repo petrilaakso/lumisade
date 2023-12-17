@@ -67,7 +67,7 @@ loop:
 			if ev.Key() == tcell.KeyEscape || ev.Key() == tcell.KeyCtrlC || ev.Rune() == 'q' {
 				quit <- struct{}{}
 				break loop
-			} else if ev.Rune() == 'r' {
+			} else if ev.Rune() == 'r' || ev.Rune() == ' ' {
 				moveSnow(s)
 				makeSnow(s)
 				s.Show()
