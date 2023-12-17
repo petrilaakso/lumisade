@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"time"
@@ -25,7 +26,7 @@ func makeSnow(s tcell.Screen) {
 	x, _ := s.Size()
 	for xi := 0; xi < x; xi++ {
 		_, c, st, _ := s.GetContent(xi, 0)
-		if rand.Int()%5 == 0 {
+		if rand.Int()%10 == 0 {
 			s.SetContent(xi, 0, snow[rand.Intn(len(snow))], c, st)
 		}
 	}
@@ -34,20 +35,22 @@ func makeSnow(s tcell.Screen) {
 func main() {
 	s, e := tcell.NewScreen()
 	if e != nil {
-		panic(e)
+		fmt.Fprintf(os.Stderr, "%v\n", e)
+		os.Exit(1)
 	}
-	e = s.Init()
-	defer s.Fini()
-	if e != nil {
-		panic(e)
+	if e := s.Init(); e != nil {
+		fmt.Fprintf(os.Stderr, "%v\n", e)
+		os.Exit(1)
 	}
 
+	// periodic refresh event
 	quit := make(chan struct{})
-	go func(quit chan struct{}) {
-		ticker := time.NewTicker(1 * time.Second)
+	go func(quit <-chan struct{}) {
+		ticker := time.NewTicker(500 * time.Millisecond)
 		for {
 			select {
 			case <-quit:
+				ticker.Stop()
 				return
 			case <-ticker.C:
 				s.PostEvent(tcell.NewEventKey(tcell.KeyRune, rune('r'), 0))
@@ -55,15 +58,15 @@ func main() {
 		}
 	}(quit)
 
+loop:
 	for {
 		switch ev := s.PollEvent().(type) {
 		case *tcell.EventResize:
 			s.Sync()
 		case *tcell.EventKey:
-			if ev.Key() == tcell.KeyEscape || ev.Key() == tcell.KeyCtrlC {
+			if ev.Key() == tcell.KeyEscape || ev.Key() == tcell.KeyCtrlC || ev.Rune() == 'q' {
 				quit <- struct{}{}
-				s.Fini()
-				os.Exit(0)
+				break loop
 			} else if ev.Rune() == 'r' {
 				moveSnow(s)
 				makeSnow(s)
@@ -71,4 +74,7 @@ func main() {
 			}
 		}
 	}
+
+	s.Fini()
+	os.Exit(0)
 }
