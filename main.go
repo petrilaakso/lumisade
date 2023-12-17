@@ -25,8 +25,8 @@ func moveSnow(s tcell.Screen) {
 func makeSnow(s tcell.Screen) {
 	x, _ := s.Size()
 	for xi := 0; xi < x; xi++ {
-		_, c, st, _ := s.GetContent(xi, 0)
 		if rand.Int()%10 == 0 {
+			_, c, st, _ := s.GetContent(xi, 0)
 			s.SetContent(xi, 0, snow[rand.Intn(len(snow))], c, st)
 		}
 	}
