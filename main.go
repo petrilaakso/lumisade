@@ -9,7 +9,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-var snow = []rune{'*', '✢', '✣', '✤', '✥', '✱', '✲', '✵', '✻', '✼', '❅', '❆', '❉', '❊', '❋'}
+var snow = [...]rune{'*', '✢', '✣', '✤', '✥', '✱', '✲', '✵', '✻', '✼', '❅', '❆', '❉', '❊', '❋'}
 
 func moveSnow(s tcell.Screen) {
 	x, y := s.Size()
