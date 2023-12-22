@@ -173,13 +173,11 @@ loop:
 			} else if ev.Rune() == 'r' || ev.Rune() == ' ' {
 				world := newFrame(s.Size())
 				snow = rain(snow)
-				_, wy := world.size()
+				wx, wy := world.size()
 				world.drawAt(0, wy-ty, town1)
-				world.drawAt(tx*1, wy-ty, town2) // Spam towns
-				world.drawAt(tx*2, wy-ty, town2)
-				world.drawAt(tx*3, wy-ty, town2)
-				world.drawAt(tx*4, wy-ty, town2)
-				world.drawAt(tx*5, wy-ty, town2)
+				for i := 0; tx*i < wx; i++ {
+					world.drawAt(tx*i, wy-ty, town2)
+				}
 				world.draw(snow)
 				world.set(s)
 				s.Show()
