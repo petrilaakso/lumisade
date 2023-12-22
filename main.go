@@ -175,7 +175,7 @@ loop:
 				snow = rain(snow)
 				wx, wy := world.size()
 				world.drawAt(0, wy-ty, town1)
-				for i := 0; tx*i < wx; i++ {
+				for i := 1; tx*i < wx; i++ {
 					world.drawAt(tx*i, wy-ty, town2)
 				}
 				world.draw(snow)
