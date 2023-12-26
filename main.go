@@ -81,6 +81,9 @@ func (f *frame) draw(p *frame) {
 }
 
 func (d *frame) drawAt(x, y int, s *frame) {
+	if x < 0 || y < 0 {
+		return
+	}
 	maxx, maxy := d.size()
 	for sx := range s.c {
 		for sy := range s.c[sx] {
