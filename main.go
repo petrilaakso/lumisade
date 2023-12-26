@@ -168,6 +168,11 @@ loop:
 		switch ev := s.PollEvent().(type) {
 		case *tcell.EventResize:
 			snow = newFrame(s.Size())
+			// fill screen with snow
+			_, y := s.Size()
+			for i := 0; i < y; i++ {
+				snow = rain(snow)
+			}
 			s.Sync()
 		case *tcell.EventKey:
 			if ev.Key() == tcell.KeyEscape || ev.Key() == tcell.KeyCtrlC || ev.Rune() == 'q' {
