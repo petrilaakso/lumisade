@@ -7,10 +7,12 @@ import (
 	"os"
 	"time"
 
+	"sync/atomic"
+
 	"github.com/gdamore/tcell/v2"
 )
 
-var snow = [...]rune{'*', '✢', '✣', '✤', '✥', '✱', '✲', '✵', '✻', '✼', '❅', '❆', '❉', '❊', '❋'}
+var snow = [...]rune{'*', '☸', '✢', '✣', '✤', '✥', '✱', '✲', '✵', '✻', '✼', '✾', '❃', '❄', '❅', '❆', '❇', '❈', '❉', '❊', '❋'}
 
 type cell struct {
 	primary   rune
@@ -112,6 +114,7 @@ func rain(f *frame) *frame {
 	for x := 0; x < len(f.c); x++ {
 		if rand.Int()%10 == 0 {
 			f.c[x][0].primary = snow[rand.Intn(len(snow))]
+			IncFlakes()
 		}
 	}
 
@@ -126,6 +129,14 @@ func (f *frame) set(s tcell.Screen) {
 	}
 }
 
+var snowflakes int64 // stats
+func IncFlakes() {
+	atomic.AddInt64(&snowflakes, 1)
+}
+func GetFlakes() int64 {
+	return atomic.LoadInt64(&snowflakes)
+}
+
 //go:embed lb1.txt
 var lb1 string
 
@@ -133,6 +144,7 @@ var lb1 string
 var lb2 string
 
 func main() {
+	start := time.Now()
 	s, e := tcell.NewScreen()
 	if e != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", e)
@@ -194,5 +206,6 @@ loop:
 	}
 
 	s.Fini()
+	fmt.Printf("The snowfall was steady — %d flakes in %d seconds\n", GetFlakes(), int(time.Since(start).Seconds()))
 	os.Exit(0)
 }

@@ -1,6 +1,6 @@
 module github.com/petrilaakso/lumisade
 
-go 1.21.5
+go 1.25.5
 
 require github.com/gdamore/tcell/v2 v2.7.0
 
